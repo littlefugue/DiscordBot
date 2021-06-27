@@ -1,0 +1,8 @@
+# .env stores the Discord token
+# DISCORD_TOKEN='--your token here without ' s--'
+timelog/.env
+
+timelog/data.csv
+timelog/temp.pkl
+
+HangangMan/.env
