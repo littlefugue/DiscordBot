@@ -8,9 +8,13 @@ import pickle
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
+# path =  '/home/pi/Projects/DiscordBot/timelog/'
+
 class MyClient(discord.Client):
 	def __init__(self):
 		super().__init__()
+#		self.path = path+'data.csv'
+#		self.temp_path = path+'temp.pkl'
 		self.path = './data.csv'
 		self.temp_path = './temp.pkl'
 		self.ignore_channels = ["라운지", "게임방"]
