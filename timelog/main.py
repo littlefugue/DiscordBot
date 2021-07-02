@@ -47,51 +47,51 @@ class MyClient(discord.Client):
 
             if cmd == 'start':
                 self.start_hour = int(argv[0])
-				df = pd.DataFrame([self.start_hour])
-				pd.DataFrame([self.start_hour]).to_csv('./start.csv')
+                df = pd.DataFrame([self.start_hour])
+                pd.DataFrame([self.start_hour]).to_csv('./start.csv')
 
-			if cmd == 'today':
-				date = str((datetime.datetime.now() - datetime.timedelta(hours=self.start_hour)).date())
-				seconds = int(self.data.loc[date, message.author.name])
-				td = datetime.timedelta(seconds=seconds)
-				await message.channel.send(str(td))
+            if cmd == 'today':
+                date = str((datetime.datetime.now() - datetime.timedelta(hours=self.start_hour)).date())
+                seconds = int(self.data.loc[date, message.author.name])
+                td = datetime.timedelta(seconds=seconds)
+                await message.channel.send(str(td))
 
-			if cmd == 'user':
-				sort_data = self.data.sort_index()
-				for member in message.mentions:
-					for date, seconds in sort_data[member.name].iteritems():
-						seconds = int(seconds)
-						td = datetime.timedelta(seconds=seconds)
-						await message.channel.send(date + '\t' + str(td))
+            if cmd == 'user':
+                sort_data = self.data.sort_index()
+                for member in message.mentions:
+                    for date, seconds in sort_data[member.name].iteritems():
+                        seconds = int(seconds)
+                        td = datetime.timedelta(seconds=seconds)
+                        await message.channel.send(date + '\t' + str(td))
 
-			if cmd == 'ignore':
-				channel_name = " ".join(argv)
-				self.ignore_channels.append(channel_name)
+            if cmd == 'ignore':
+                channel_name = " ".join(argv)
+                self.ignore_channels.append(channel_name)
 
-	async def on_voice_state_update(self, member, before, after):
-		before_channel = before.channel
-		after_channel = after.channel
-		if member.name not in self.members:
+    async def on_voice_state_update(self, member, before, after):
+        before_channel = before.channel
+        after_channel = after.channel
+        if member.name not in self.members:
 			self.members.append(member.name)
 			self.data[member.name] = [0 for _ in self.data.index]
 
-		if before_channel is not None and before_channel.name not in self.ignore_channels:
-			if member.name in self.temp.keys():
-				time_in = self.temp[member.name]
-				time_out = datetime.datetime.now()
-				date = str((time_out - datetime.timedelta(hours=self.start_hour)).date())
-				if date not in self.data.index:
-					self.data.loc[date] = [0 for _ in self.members]
-					self.data.loc[date] = [0 for _ in self.members]
-				self.data.loc[date, member.name] += (time_out - time_in).total_seconds()
+        if before_channel is not None and before_channel.name not in self.ignore_channels:
+            if member.name in self.temp.keys():
+                time_in = self.temp[member.name]
+                time_out = datetime.datetime.now()
+                date = str((time_out - datetime.timedelta(hours=self.start_hour)).date())
+                if date not in self.data.index:
+                    self.data.loc[date] = [0 for _ in self.members]
+                    self.data.loc[date] = [0 for _ in self.members]
+                self.data.loc[date, member.name] += (time_out - time_in).total_seconds()
 
-		if after_channel is not None and after_channel.name not in self.ignore_channels:
-			self.temp[member.name] = datetime.datetime.now()
+        if after_channel is not None and after_channel.name not in self.ignore_channels:
+            self.temp[member.name] = datetime.datetime.now()
 
-		self.data.to_csv(self.path)
-		a_file = open(self.temp_path, "wb")
-		pickle.dump(self.temp, a_file)
-		a_file.close()
+        self.data.to_csv(self.path)
+        a_file = open(self.temp_path, "wb")
+        pickle.dump(self.temp, a_file)
+        a_file.close()
 
 
 client = MyClient()
