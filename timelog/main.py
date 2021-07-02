@@ -11,42 +11,42 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 # path =  '/home/pi/Projects/DiscordBot/timelog/'
 
 class MyClient(discord.Client):
-	def __init__(self):
-		super().__init__()
-#		self.path = path+'data.csv'
-#		self.temp_path = path+'temp.pkl'
-		self.path = './data.csv'
-		self.temp_path = './temp.pkl'
-		self.ignore_channels = ["라운지", "게임방"]
-		self.members = []
-		self.temp = {}
-		self.data = pd.DataFrame()
-		self.start_hour = 0
+    def __init__(self):
+        super().__init__()
+#       self.path = path+'data.csv'
+#       self.temp_path = path+'temp.pkl'
+        self.path = './data.csv'
+        self.temp_path = './temp.pkl'
+        self.ignore_channels = ["라운지", "게임방"]
+        self.members = []
+        self.temp = {}
+        self.data = pd.DataFrame()
+        self.start_hour = 0
 
-	async def on_ready(self):
-		print('Logged on as {0}!'.format(self.user))
-		if os.path.exists(self.path):
-			self.data = pd.read_csv(self.path, index_col=0)
-			self.members = self.data.columns.to_list()
-		if os.path.exists('./start.csv'):
-			self.start_hour = int(pd.read_csv('./start.csv', index_col=0).loc[0, '0'])
-		if os.path.exists(self.temp_path):
-			a_file = open(self.temp_path, "rb")
-			self.temp = pickle.load(a_file)
+    async def on_ready(self):
+        print('Logged on as {0}!'.format(self.user))
+        if os.path.exists(self.path):
+            self.data = pd.read_csv(self.path, index_col=0)
+            self.members = self.data.columns.to_list()
+        if os.path.exists('./start.csv'):
+            self.start_hour = int(pd.read_csv('./start.csv', index_col=0).loc[0, '0'])
+        if os.path.exists(self.temp_path):
+            a_file = open(self.temp_path, "rb")
+            self.temp = pickle.load(a_file)
 
-	async def on_message(self, message):
-		print('Message from {0.author}: {0.content}'.format(message))
+    async def on_message(self, message):
+        print('Message from {0.author}: {0.content}'.format(message))
 
-		if message.content.startswith('log'):
-			_, cmd, *argv = message.content.strip().split()
-			if cmd == 'help':
-				await message.channel.send(
-					"log start n: set a day's start n:00\\ "
-					+ "log today : show user's voice channel log today\\"
-					+ "log user @mention : Show user's log history")
+        if message.content.startswith('log'):
+            _, cmd, *argv = message.content.strip().split()
+            if cmd == 'help':
+                await message.channel.send(
+                    "log start n: set a day's start n:00\\ "
+                    + "log today : show user's voice channel log today\\"
+                    + "log user @mention : Show user's log history")
 
-			if cmd == 'start':
-				self.start_hour = int(argv[0])
+            if cmd == 'start':
+                self.start_hour = int(argv[0])
 				df = pd.DataFrame([self.start_hour])
 				pd.DataFrame([self.start_hour]).to_csv('./start.csv')
 
