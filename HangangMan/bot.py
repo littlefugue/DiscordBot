@@ -12,14 +12,14 @@ bot = commands.Bot(command_prefix='')
 
 @bot.event
 async def on_ready():
-	print(f'Logged in as {bot.user.name}!!!')
+    print(f'Logged in as {bot.user.name}!!!')
 
 @bot.command()
 async def ping(ctx):
-	await ctx.send(f'pong!')
+    await ctx.send(f'pong!')
 
 @bot.command(name='갈!')
 async def 갈(ctx):
-	await ctx.send('멈춰!!!')
+    await ctx.send('멈춰!!!')
 
 bot.run(TOKEN)
