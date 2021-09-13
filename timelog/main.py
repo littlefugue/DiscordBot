@@ -72,8 +72,8 @@ class MyClient(discord.Client):
         before_channel = before.channel
         after_channel = after.channel
         if member.name not in self.members:
-			self.members.append(member.name)
-			self.data[member.name] = [0 for _ in self.data.index]
+            self.members.append(member.name)
+            self.data[member.name] = [0 for _ in self.data.index]
 
         if before_channel is not None and before_channel.name not in self.ignore_channels:
             if member.name in self.temp.keys():
